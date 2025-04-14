@@ -9,7 +9,8 @@ import {
   Search,
   ChevronDown,
   ImagePlus,
-  AlertCircle  
+  AlertCircle,
+  Star  
 } from "lucide-react";
 
 import { AuthMiddleware } from "@/components/admin/auth-middleware";
@@ -49,6 +50,7 @@ interface Project {
   goal: number;
   raised: number;
   is_active: boolean;
+  is_featured: boolean;
   start_date: string;
   end_date: string | null;
   main_image: string | null;
@@ -63,6 +65,7 @@ export default function ProjectsListPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [projectToDelete, setProjectToDelete] = useState<number | null>(null);
+  const [projectToFeature, setProjectToFeature] = useState<number | null>(null);
   const { toast } = useToast();
   
   useEffect(() => {
@@ -131,6 +134,35 @@ export default function ProjectsListPage() {
     }
   };
   
+  const handleFeatureProject = async () => {
+    if (!projectToFeature) return;
+    
+    try {
+      await axios.post(`/api/admin/projects/${projectToFeature}/feature`, {}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("gaza-admin-token")}`
+        }
+      });
+      
+      toast({
+        title: "تم التمييز",
+        description: "تم تمييز المشروع بنجاح في الصفحة الرئيسية",
+      });
+      
+      // Refresh projects list
+      fetchProjects();
+    } catch (error) {
+      console.error("Error featuring project:", error);
+      toast({
+        title: "خطأ",
+        description: "فشل في تمييز المشروع",
+        variant: "destructive",
+      });
+    } finally {
+      setProjectToFeature(null);
+    }
+  };
+  
   // Format date to be more readable
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -191,6 +223,7 @@ export default function ProjectsListPage() {
                   <TableHead className="text-center">المبلغ المستهدف</TableHead>
                   <TableHead className="text-center">المبلغ المجموع</TableHead>
                   <TableHead className="text-center">الحالة</TableHead>
+                  <TableHead className="text-center">مميز</TableHead>
                   <TableHead className="text-center">تاريخ البدء</TableHead>
                   <TableHead className="text-center">المنشئ</TableHead>
                   <TableHead className="text-center">الإجراءات</TableHead>
@@ -199,21 +232,21 @@ export default function ProjectsListPage() {
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center py-10">
+                    <TableCell colSpan={9} className="text-center py-10">
                       <div className="inline-block border-4 border-t-gaza-primary border-r-gaza-primary border-b-muted border-l-muted rounded-full w-8 h-8 animate-spin"></div>
                       <p className="mt-2">جاري تحميل البيانات...</p>
                     </TableCell>
                   </TableRow>
                 ) : filteredProjects.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center py-10">
+                    <TableCell colSpan={9} className="text-center py-10">
                       <AlertCircle className="mx-auto h-10 w-10 text-muted-foreground" />
                       <p className="mt-2">لا توجد مشاريع للعرض</p>
                     </TableCell>
                   </TableRow>
                 ) : (
                   filteredProjects.map((project, index) => (
-                    <TableRow key={project.id}>
+                    <TableRow key={project.id} className={project.is_featured ? "bg-gaza-primary/5" : ""}>
                       <TableCell className="text-center">{index + 1}</TableCell>
                       <TableCell>
                         <div className="flex items-center">
@@ -247,6 +280,13 @@ export default function ProjectsListPage() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-center">
+                        {project.is_featured ? (
+                          <Star className="mx-auto h-5 w-5 text-yellow-500 fill-yellow-500" />
+                        ) : (
+                          <Star className="mx-auto h-5 w-5 text-muted-foreground" />
+                        )}
+                      </TableCell>
+                      <TableCell className="text-center">
                         {formatDate(project.start_date)}
                       </TableCell>
                       <TableCell className="text-center">
@@ -267,6 +307,15 @@ export default function ProjectsListPage() {
                                 تعديل المشروع
                               </Link>
                             </DropdownMenuItem>
+                            {!project.is_featured && (
+                              <DropdownMenuItem 
+                                className="cursor-pointer"
+                                onClick={() => setProjectToFeature(project.id)}
+                              >
+                                <Star className="ml-2" size={14} />
+                                تمييز المشروع
+                              </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem asChild>
                               <Link to={`/projects/${project.id}`} target="_blank" className="cursor-pointer">
                                 <Search className="ml-2" size={14} />
@@ -307,6 +356,27 @@ export default function ProjectsListPage() {
                 onClick={handleDeleteProject}
               >
                 حذف المشروع
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        
+        {/* Feature Confirmation Dialog */}
+        <AlertDialog open={!!projectToFeature} onOpenChange={(open) => !open && setProjectToFeature(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>تمييز المشروع في الصفحة الرئيسية</AlertDialogTitle>
+              <AlertDialogDescription>
+                سيتم تمييز المشروع وعرضه بشكل خاص في الصفحة الرئيسية. سيتم إلغاء تمييز أي مشروع آخر مميز حالياً.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>إلغاء</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-gaza-primary text-white hover:bg-gaza-primary/90"
+                onClick={handleFeatureProject}
+              >
+                تمييز المشروع
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

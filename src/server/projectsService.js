@@ -1,5 +1,4 @@
-
-import { query } from './db';
+import { query } from './db.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -14,7 +13,34 @@ export async function getActiveProjects() {
      (SELECT image_url FROM project_images WHERE project_id = p.id AND is_main = 1 LIMIT 1) as main_image 
      FROM projects p 
      WHERE p.is_active = 1 
-     ORDER BY p.created_at DESC`
+     ORDER BY p.is_featured DESC, p.created_at DESC`
+  );
+}
+
+// دالة للحصول على المشروع المميز
+export async function getFeaturedProject() {
+  const featuredProjects = await query(
+    `SELECT p.*, 
+     (SELECT image_url FROM project_images WHERE project_id = p.id AND is_main = 1 LIMIT 1) as main_image 
+     FROM projects p 
+     WHERE p.is_active = 1 AND p.is_featured = 1 
+     LIMIT 1`
+  );
+  
+  return featuredProjects.length > 0 ? featuredProjects[0] : null;
+}
+
+// دالة لتمييز مشروع 
+export async function setFeaturedProject(projectId) {
+  // إلغاء تمييز جميع المشاريع أولاً
+  await query(
+    `UPDATE projects SET is_featured = 0 WHERE is_featured = 1`
+  );
+  
+  // تمييز المشروع المختار
+  return await query(
+    `UPDATE projects SET is_featured = 1 WHERE id = ?`,
+    [projectId]
   );
 }
 
@@ -54,12 +80,12 @@ export async function getProjectDonations(projectId) {
 
 // دالة لإنشاء مشروع جديد
 export async function createProject(projectData, userId) {
-  const { title, description, goal, startDate, endDate } = projectData;
+  const { title, description, goal, startDate, endDate, isFeatured } = projectData;
   
   const result = await query(
-    `INSERT INTO projects (title, description, goal, start_date, end_date, created_by) 
-     VALUES (?, ?, ?, ?, ?, ?)`,
-    [title, description, goal, startDate, endDate, userId]
+    `INSERT INTO projects (title, description, goal, start_date, end_date, is_featured, created_by) 
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [title, description, goal, startDate, endDate, isFeatured || false, userId]
   );
   
   return result.insertId;
@@ -104,13 +130,21 @@ export async function uploadProjectImages(projectId, images, mainImageIndex = 0)
 
 // دالة لتحديث بيانات مشروع
 export async function updateProject(projectId, projectData) {
-  const { title, description, goal, startDate, endDate, isActive } = projectData;
+  const { title, description, goal, startDate, endDate, isActive, isFeatured } = projectData;
+  
+  // إذا كان المشروع سيتم تمييزه، ألغِ تمييز باقي المشاريع أولاً
+  if (isFeatured) {
+    await query(
+      `UPDATE projects SET is_featured = 0 WHERE id != ?`,
+      [projectId]
+    );
+  }
   
   return await query(
     `UPDATE projects 
-     SET title = ?, description = ?, goal = ?, start_date = ?, end_date = ?, is_active = ? 
+     SET title = ?, description = ?, goal = ?, start_date = ?, end_date = ?, is_active = ?, is_featured = ? 
      WHERE id = ?`,
-    [title, description, goal, startDate, endDate, isActive, projectId]
+    [title, description, goal, startDate, endDate, isActive, isFeatured || false, projectId]
   );
 }
 
@@ -164,6 +198,6 @@ export async function getAdminProjects() {
      u.name as creator_name
      FROM projects p 
      LEFT JOIN users u ON p.created_by = u.id
-     ORDER BY p.created_at DESC`
+     ORDER BY p.is_featured DESC, p.created_at DESC`
   );
 }

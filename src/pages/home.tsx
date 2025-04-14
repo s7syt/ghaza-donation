@@ -9,7 +9,9 @@ import { ProjectSlider, SliderImage } from "@/components/project-slider";
 import { DonorsList } from "@/components/donors-list";
 import { PaymentMethodsList } from "@/components/payment-methods-list";
 import { getProjects, getLatestDonations, getDonationStats } from "@/api/projectsApi";
-import { Heart, ArrowLeft, CreditCard } from "lucide-react";
+import { Heart, ArrowLeft, CreditCard, Star, Trophy } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 
 export default function HomePage() {
   const [projects, setProjects] = useState<any[]>([]);
@@ -77,7 +79,9 @@ export default function HomePage() {
     ? projects.filter(project => project && project.is_active) 
     : [];
     
-  const featuredProject = activeProjects.length > 0 ? activeProjects[0] : null;
+  // Get featured project
+  const featuredProject = activeProjects.find(project => project.is_featured) || 
+                         (activeProjects.length > 0 ? activeProjects[0] : null);
   
   // Transform featured project for components safely
   const featuredProjectImages: SliderImage[] = featuredProject ? 
@@ -87,6 +91,13 @@ export default function HomePage() {
       url: featuredProject.main_image, 
       alt: featuredProject.title 
     }] : [];
+  
+  // Calculate progress percentage
+  const calculateProgress = (raised: number, goal: number) => {
+    if (!goal || goal <= 0) return 0;
+    const percentage = (raised / goal) * 100;
+    return Math.min(percentage, 100); // Cap at 100%
+  };
   
   return (
     <div className="flex flex-col min-h-screen">
@@ -146,36 +157,86 @@ export default function HomePage() {
             <p className="mt-4 text-lg">جاري تحميل البيانات...</p>
           </section>
         ) : featuredProject ? (
-          <section className="py-12 md:py-16">
-            <div className="gaza-container">
+          <section className="py-12 md:py-16 relative overflow-hidden">
+            <div className="gaza-container relative z-10">
               <div className="flex items-center mb-8">
-                <Heart className="text-gaza-primary ml-2" size={24} />
+                <Trophy className="text-yellow-500 ml-2" size={28} />
                 <h2 className="text-2xl md:text-3xl font-bold">مشروع مميز</h2>
               </div>
               
               <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                 <div className="lg:col-span-3">
-                  <ProjectSlider images={featuredProjectImages} />
-                  <div className="mt-6">
-                    <h3 className="text-xl font-bold mb-3">{featuredProject.title}</h3>
-                    <p className="text-muted-foreground">{featuredProject.description}</p>
-                    
-                    <div className="mt-6">
-                      <Link to={`/projects/${featuredProject.id}`}>
-                        <Button className="bg-gaza-primary hover:bg-gaza-primary/90">
-                          <span>اقرأ المزيد</span>
-                          <ArrowLeft className="mr-2" size={16} />
-                        </Button>
-                      </Link>
+                  <Card className="overflow-hidden border-2 border-yellow-200 shadow-lg relative">
+                    {/* Featured Badge */}
+                    <div className="absolute top-4 right-4 z-10 bg-yellow-500 text-white px-3 py-1 rounded-full flex items-center font-medium animate-pulse">
+                      <Star className="ml-1 h-4 w-4 fill-white" />
+                      <span>مشروع مميز</span>
                     </div>
-                  </div>
+                    
+                    <div className="p-1">
+                      <ProjectSlider images={featuredProjectImages} />
+                    </div>
+                    
+                    <div className="p-6">
+                      <h3 className="text-2xl font-bold mb-3">{featuredProject.title}</h3>
+                      <p className="text-muted-foreground mb-4">{featuredProject.description}</p>
+                      
+                      <div className="space-y-4 mb-6">
+                        <div>
+                          <div className="flex justify-between mb-2">
+                            <span className="font-medium">المبلغ المجموع</span>
+                            <span className="font-bold text-gaza-primary">
+                              {featuredProject.raised?.toLocaleString('ar-EG')} $
+                            </span>
+                          </div>
+                          <div className="flex justify-between mb-2">
+                            <span className="font-medium">المبلغ المستهدف</span>
+                            <span className="font-bold">
+                              {featuredProject.goal?.toLocaleString('ar-EG')} $
+                            </span>
+                          </div>
+                          <Progress 
+                            value={calculateProgress(featuredProject.raised, featuredProject.goal)} 
+                            className="h-2 mt-2 bg-gray-100" 
+                          />
+                          <p className="text-sm text-right mt-1">
+                            {Math.round(calculateProgress(featuredProject.raised, featuredProject.goal))}% مكتمل
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <Button className="bg-gaza-primary hover:bg-gaza-primary/90 flex-1">
+                          تبرع الآن
+                        </Button>
+                        <Button variant="outline" asChild>
+                          <Link to={`/projects/${featuredProject.id}`}>
+                            التفاصيل
+                            <ArrowLeft className="mr-2" size={16} />
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
                 </div>
                 
                 <div className="lg:col-span-2">
-                  <DonorsList donors={recentDonors} limit={3} />
+                  <Card className="h-full border-2 border-yellow-100">
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold mb-4 flex items-center">
+                        <Heart className="text-gaza-primary ml-2" size={20} />
+                        آخر التبرعات لهذا المشروع
+                      </h3>
+                      <DonorsList donors={recentDonors} limit={3} />
+                    </div>
+                  </Card>
                 </div>
               </div>
             </div>
+            
+            {/* Decorative Background Elements */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-100 rounded-full opacity-30 transform translate-x-1/2 -translate-y-1/2"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gaza-primary rounded-full opacity-10 transform -translate-x-1/2 translate-y-1/2"></div>
           </section>
         ) : null}
 
@@ -199,9 +260,13 @@ export default function HomePage() {
               </div>
             ) : activeProjects.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {activeProjects.slice(0, 3).map((project) => (
-                  <ProjectCard key={project.id} project={project} />
-                ))}
+                {/* Filter out the featured project if any, and show other active projects */}
+                {activeProjects
+                  .filter(project => featuredProject && project.id !== featuredProject.id)
+                  .slice(0, 3)
+                  .map((project) => (
+                    <ProjectCard key={project.id} project={project} />
+                  ))}
               </div>
             ) : (
               <div className="text-center py-8">

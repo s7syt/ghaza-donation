@@ -14,6 +14,16 @@ export async function getProjects() {
   }
 }
 
+export async function getFeaturedProject() {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/projects/featured`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching featured project:", error);
+    return null;
+  }
+}
+
 export async function getProjectById(id: string | number) {
   try {
     const response = await axios.get(`${API_BASE_URL}/projects/${id}`);

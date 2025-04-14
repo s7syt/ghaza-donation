@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Star } from "lucide-react";
 
 interface Project {
   id: string | number;
@@ -10,6 +11,7 @@ interface Project {
   goal: number;
   raised: number;
   isActive: boolean;
+  isFeatured?: boolean;
 }
 
 interface RecentProjectsTableProps {
@@ -32,6 +34,7 @@ export function RecentProjectsTable({ projects }: RecentProjectsTableProps) {
                 <th className="pb-2 font-medium">المبلغ المحصل</th>
                 <th className="pb-2 font-medium">نسبة الإنجاز</th>
                 <th className="pb-2 font-medium">الحالة</th>
+                <th className="pb-2 font-medium">مميز</th>
                 <th className="pb-2 font-medium">خيارات</th>
               </tr>
             </thead>
@@ -40,7 +43,7 @@ export function RecentProjectsTable({ projects }: RecentProjectsTableProps) {
                 const percentRaised = Math.round((project.raised / project.goal) * 100);
                 
                 return (
-                  <tr key={project.id} className="border-b last:border-0">
+                  <tr key={project.id} className={`border-b last:border-0 ${project.isFeatured ? 'bg-yellow-50' : ''}`}>
                     <td className="py-3 font-medium">{project.title}</td>
                     <td className="py-3">{project.goal.toLocaleString('ar-EG')} $</td>
                     <td className="py-3">{project.raised.toLocaleString('ar-EG')} $</td>
@@ -60,6 +63,13 @@ export function RecentProjectsTable({ projects }: RecentProjectsTableProps) {
                       >
                         {project.isActive ? "نشط" : "منتهي"}
                       </span>
+                    </td>
+                    <td className="py-3 text-center">
+                      {project.isFeatured ? (
+                        <Star className="h-5 w-5 text-yellow-500 fill-yellow-500 inline-block" />
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
                     </td>
                     <td className="py-3">
                       <Link
