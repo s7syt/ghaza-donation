@@ -4,6 +4,28 @@ import { Link } from "react-router-dom";
 import { Heart, Mail, MapPin, Phone, Facebook, Twitter, Instagram, Youtube, Linkedin, MessageCircle } from "lucide-react";
 import { SiteSettings, getSiteSettings } from "@/api/siteSettingsApi";
 
+// Custom TikTok icon
+const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="lucide lucide-tiktok"
+    {...props}
+  >
+    <path d="M9 12a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
+    <path d="M15 8a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
+    <path d="M15 8v8a4 4 0 0 1-4 4" />
+    <line x1="15" y1="4" x2="15" y2="12" />
+  </svg>
+);
+
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const [settings, setSettings] = useState<SiteSettings>({});
@@ -135,23 +157,7 @@ export function Footer() {
                 {settings.tiktok_url && (
                   <a href={settings.tiktok_url} target="_blank" rel="noopener noreferrer"
                      className="bg-muted-foreground/10 p-2 rounded-full hover:bg-gaza-primary/20 transition-colors">
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      width="16" 
-                      height="16" 
-                      viewBox="0 0 24 24" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      strokeWidth="2" 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      className="text-gaza-primary"
-                    >
-                      <path d="M9 12a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
-                      <path d="M15 8a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/>
-                      <path d="M15 8v8a4 4 0 0 1-4 4"/>
-                      <line x1="15" y1="4" x2="15" y2="12"/>
-                    </svg>
+                    <TikTokIcon className="text-gaza-primary" />
                   </a>
                 )}
               </div>
