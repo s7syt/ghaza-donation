@@ -9,11 +9,11 @@ export async function getMembers(page = 1, limit = 10, search = '') {
     SELECT 
       u.id, 
       u.name, 
-      u.email, 
-      u.phone, 
+      u.username as email, 
+      '' as phone, 
       u.is_active as isActive, 
       u.created_at as registrationDate, 
-      u.last_login as lastLoginDate 
+      u.last_seen as lastLoginDate 
     FROM 
       users u 
     WHERE 
@@ -23,8 +23,8 @@ export async function getMembers(page = 1, limit = 10, search = '') {
   const params = [];
   
   if (search) {
-    sql += ` AND (u.name LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)`;
-    params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+    sql += ` AND (u.name LIKE ? OR u.username LIKE ?)`;
+    params.push(`%${search}%`, `%${search}%`);
   }
   
   sql += ` ORDER BY u.created_at DESC LIMIT ? OFFSET ?`;
@@ -40,10 +40,10 @@ export async function getMembers(page = 1, limit = 10, search = '') {
   `;
   
   if (search) {
-    countSql += ` AND (u.name LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)`;
+    countSql += ` AND (u.name LIKE ? OR u.username LIKE ?)`;
   }
   
-  const countParams = search ? [`%${search}%`, `%${search}%`, `%${search}%`] : [];
+  const countParams = search ? [`%${search}%`, `%${search}%`] : [];
   const countResult = await query(countSql, countParams);
   const total = countResult[0].total;
   
@@ -63,11 +63,11 @@ export async function getMemberDetails(memberId) {
     SELECT 
       u.id, 
       u.name, 
-      u.email, 
-      u.phone, 
+      u.username as email, 
+      '' as phone, 
       u.is_active as isActive, 
       u.created_at as registrationDate, 
-      u.last_login as lastLoginDate 
+      u.last_seen as lastLoginDate 
     FROM 
       users u 
     WHERE 

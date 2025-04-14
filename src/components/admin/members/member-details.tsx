@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -27,7 +28,7 @@ interface Member {
   phone: string;
   isActive: boolean;
   registrationDate: string;
-  lastLoginDate: string;
+  lastLoginDate: string | null;
   donations?: {
     id: number;
     amount: number;
@@ -50,7 +51,19 @@ export function MemberDetails() {
       try {
         setIsLoading(true);
         const data = await getMemberDetails(id);
-        setMember(data);
+        
+        if (data) {
+          // Ensure all fields exist
+          setMember({
+            ...data,
+            phone: data.phone || "",
+            lastLoginDate: data.lastLoginDate || null,
+            donations: data.donations || []
+          });
+        } else {
+          toast.error("لم يتم العثور على العضو");
+          navigate('/admin/members');
+        }
       } catch (error) {
         toast.error("حدث خطأ أثناء تحميل بيانات العضو");
         navigate('/admin/members');
@@ -86,12 +99,18 @@ export function MemberDetails() {
     }
   };
   
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("ar-EG", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return "—";
+    
+    try {
+      return new Date(dateString).toLocaleDateString("ar-EG", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch (error) {
+      return "—";
+    }
   };
   
   if (isLoading) {
@@ -179,13 +198,8 @@ export function MemberDetails() {
             </div>
             
             <div className="space-y-2">
-              <Label>البريد الإلكتروني</Label>
+              <Label>اسم المستخدم / البريد الإلكتروني</Label>
               <Input value={member.email} readOnly />
-            </div>
-            
-            <div className="space-y-2">
-              <Label>رقم الهاتف</Label>
-              <Input value={member.phone || "غير متوفر"} readOnly />
             </div>
             
             <div className="space-y-2">

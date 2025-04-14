@@ -18,9 +18,21 @@ export default function AdminMembersListPage() {
     try {
       setIsLoading(true);
       const response = await getSiteMembers(page, 10, searchQuery);
-      setMembers(response.members);
-      setTotalPages(response.totalPages);
+      
+      // Transform the data to ensure all required fields exist
+      const transformedMembers = response.members.map(member => ({
+        ...member,
+        // Ensure phone field exists (even if empty)
+        phone: member.phone || "",
+        // Format dates properly or provide fallbacks
+        registrationDate: member.registrationDate || new Date().toISOString(),
+        lastLoginDate: member.lastLoginDate || null
+      }));
+      
+      setMembers(transformedMembers);
+      setTotalPages(response.totalPages || 1);
     } catch (error) {
+      console.error("Error fetching site members:", error);
       toast.error("حدث خطأ أثناء تحميل بيانات الأعضاء");
     } finally {
       setIsLoading(false);

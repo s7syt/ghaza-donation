@@ -1,4 +1,3 @@
-
 -- إنشاء قاعدة البيانات
 CREATE DATABASE IF NOT EXISTS gaza_aid_platform CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -11,6 +10,8 @@ CREATE TABLE IF NOT EXISTS users (
   password VARCHAR(255) NOT NULL,
   name VARCHAR(100) NOT NULL,
   role ENUM('admin', 'editor') NOT NULL DEFAULT 'admin',
+  is_active BOOLEAN DEFAULT TRUE,
+  last_seen TIMESTAMP NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -45,7 +46,7 @@ interface Member {
   phone: string;
   isActive: boolean;
   registrationDate: string;
-  lastLoginDate: string;
+  lastLoginDate: string | null;
 }
 
 interface MembersListProps {
@@ -88,12 +89,18 @@ export function MembersList({ members, onSearch, onRefresh, isLoading }: Members
     }
   };
   
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("ar-EG", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return "—";
+    
+    try {
+      return new Date(dateString).toLocaleDateString("ar-EG", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch (error) {
+      return "—";
+    }
   };
   
   return (
@@ -131,7 +138,6 @@ export function MembersList({ members, onSearch, onRefresh, isLoading }: Members
               <TableRow>
                 <TableHead>الاسم</TableHead>
                 <TableHead>البريد الإلكتروني</TableHead>
-                <TableHead>رقم الهاتف</TableHead>
                 <TableHead>تاريخ التسجيل</TableHead>
                 <TableHead>آخر تسجيل دخول</TableHead>
                 <TableHead>الحالة</TableHead>
@@ -143,10 +149,9 @@ export function MembersList({ members, onSearch, onRefresh, isLoading }: Members
                 <TableRow key={member.id}>
                   <TableCell className="font-medium">{member.name}</TableCell>
                   <TableCell>{member.email}</TableCell>
-                  <TableCell>{member.phone || "—"}</TableCell>
                   <TableCell>{formatDate(member.registrationDate)}</TableCell>
                   <TableCell>
-                    {member.lastLoginDate ? formatDate(member.lastLoginDate) : "—"}
+                    {formatDate(member.lastLoginDate)}
                   </TableCell>
                   <TableCell>
                     <Badge
