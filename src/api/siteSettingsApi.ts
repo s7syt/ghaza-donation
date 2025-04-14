@@ -13,6 +13,9 @@ export interface SiteSettings {
   twitter_url?: string;
   instagram_url?: string;
   youtube_url?: string;
+  linkedin_url?: string;
+  telegram_url?: string;
+  tiktok_url?: string;
   [key: string]: string | undefined;
 }
 

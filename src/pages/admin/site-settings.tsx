@@ -35,7 +35,10 @@ import {
   Youtube, 
   Globe,
   Save,
-  Building
+  Building,
+  Linkedin,
+  MessageCircle,
+  BrandTiktok
 } from "lucide-react";
 
 // Form validation schema
@@ -48,7 +51,10 @@ const siteSettingsSchema = z.object({
   facebook_url: z.string().optional(),
   twitter_url: z.string().optional(),
   instagram_url: z.string().optional(),
-  youtube_url: z.string().optional()
+  youtube_url: z.string().optional(),
+  linkedin_url: z.string().optional(),
+  telegram_url: z.string().optional(),
+  tiktok_url: z.string().optional()
 });
 
 export default function SiteSettingsPage() {
@@ -67,7 +73,10 @@ export default function SiteSettingsPage() {
       facebook_url: "",
       twitter_url: "",
       instagram_url: "",
-      youtube_url: ""
+      youtube_url: "",
+      linkedin_url: "",
+      telegram_url: "",
+      tiktok_url: ""
     }
   });
   
@@ -87,7 +96,10 @@ export default function SiteSettingsPage() {
           facebook_url: settings.facebook_url || "",
           twitter_url: settings.twitter_url || "",
           instagram_url: settings.instagram_url || "",
-          youtube_url: settings.youtube_url || ""
+          youtube_url: settings.youtube_url || "",
+          linkedin_url: settings.linkedin_url || "",
+          telegram_url: settings.telegram_url || "",
+          tiktok_url: settings.tiktok_url || ""
         });
       } catch (error) {
         toast.error("حدث خطأ أثناء تحميل إعدادات الموقع");
@@ -254,14 +266,14 @@ export default function SiteSettingsPage() {
                   
                   <FormField
                     control={form.control}
-                    name="twitter_url"
+                    name="instagram_url"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="flex items-center">
-                          <Twitter className="ml-1 h-4 w-4" /> تويتر
+                          <Instagram className="ml-1 h-4 w-4" /> انستجرام
                         </FormLabel>
                         <FormControl>
-                          <Input placeholder="https://twitter.com/gazaaid" {...field} />
+                          <Input placeholder="https://instagram.com/gazaaid" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -272,14 +284,14 @@ export default function SiteSettingsPage() {
                 <div className="grid md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="instagram_url"
+                    name="twitter_url"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="flex items-center">
-                          <Instagram className="ml-1 h-4 w-4" /> انستجرام
+                          <Twitter className="ml-1 h-4 w-4" /> تويتر
                         </FormLabel>
                         <FormControl>
-                          <Input placeholder="https://instagram.com/gazaaid" {...field} />
+                          <Input placeholder="https://twitter.com/gazaaid" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -296,6 +308,58 @@ export default function SiteSettingsPage() {
                         </FormLabel>
                         <FormControl>
                           <Input placeholder="https://youtube.com/gazaaid" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <div className="grid md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="linkedin_url"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center">
+                          <Linkedin className="ml-1 h-4 w-4" /> لينكد إن
+                        </FormLabel>
+                        <FormControl>
+                          <Input placeholder="https://linkedin.com/company/gazaaid" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="telegram_url"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center">
+                          <MessageCircle className="ml-1 h-4 w-4" /> تليجرام
+                        </FormLabel>
+                        <FormControl>
+                          <Input placeholder="https://t.me/gazaaid" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <div className="grid md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="tiktok_url"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center">
+                          <BrandTiktok className="ml-1 h-4 w-4" /> تيك توك
+                        </FormLabel>
+                        <FormControl>
+                          <Input placeholder="https://tiktok.com/@gazaaid" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

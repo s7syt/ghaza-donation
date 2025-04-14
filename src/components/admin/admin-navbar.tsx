@@ -13,8 +13,7 @@ import {
   Wallet,
   User,
   UserCircle,
-  Settings,
-  Share2
+  Settings
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -55,7 +54,6 @@ export function AdminNavbar() {
     { href: "/admin/members", label: "الأعضاء", icon: UserCircle },
     { href: "/admin/payment-methods", label: "طرق الدفع", icon: Wallet },
     { href: "/admin/site-settings", label: "إعدادات الموقع", icon: Settings },
-    { href: "/admin/social-links", label: "روابط التواصل", icon: Share2 },
   ];
   
   const isActive = (path: string) => location.pathname === path;

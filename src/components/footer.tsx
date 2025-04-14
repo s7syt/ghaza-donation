@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Heart, Mail, MapPin, Phone, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
+import { Heart, Mail, MapPin, Phone, Facebook, Twitter, Instagram, Youtube, Linkedin, MessageCircle } from "lucide-react";
 import { SiteSettings, getSiteSettings } from "@/api/siteSettingsApi";
 
 export function Footer() {
@@ -89,37 +89,72 @@ export function Footer() {
               )}
               
               {/* Social Media Links */}
-              {(settings.facebook_url || settings.twitter_url || settings.instagram_url || settings.youtube_url) && (
-                <div className="flex items-center space-x-3 space-x-reverse pt-2">
-                  {settings.facebook_url && (
-                    <a href={settings.facebook_url} target="_blank" rel="noopener noreferrer" 
-                       className="bg-muted-foreground/10 p-2 rounded-full hover:bg-gaza-primary/20 transition-colors">
-                      <Facebook size={16} className="text-gaza-primary" />
-                    </a>
-                  )}
-                  
-                  {settings.twitter_url && (
-                    <a href={settings.twitter_url} target="_blank" rel="noopener noreferrer"
-                       className="bg-muted-foreground/10 p-2 rounded-full hover:bg-gaza-primary/20 transition-colors">
-                      <Twitter size={16} className="text-gaza-primary" />
-                    </a>
-                  )}
-                  
-                  {settings.instagram_url && (
-                    <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer"
-                       className="bg-muted-foreground/10 p-2 rounded-full hover:bg-gaza-primary/20 transition-colors">
-                      <Instagram size={16} className="text-gaza-primary" />
-                    </a>
-                  )}
-                  
-                  {settings.youtube_url && (
-                    <a href={settings.youtube_url} target="_blank" rel="noopener noreferrer"
-                       className="bg-muted-foreground/10 p-2 rounded-full hover:bg-gaza-primary/20 transition-colors">
-                      <Youtube size={16} className="text-gaza-primary" />
-                    </a>
-                  )}
-                </div>
-              )}
+              <div className="flex items-center space-x-3 space-x-reverse pt-2">
+                {settings.facebook_url && (
+                  <a href={settings.facebook_url} target="_blank" rel="noopener noreferrer" 
+                     className="bg-muted-foreground/10 p-2 rounded-full hover:bg-gaza-primary/20 transition-colors">
+                    <Facebook size={16} className="text-gaza-primary" />
+                  </a>
+                )}
+                
+                {settings.twitter_url && (
+                  <a href={settings.twitter_url} target="_blank" rel="noopener noreferrer"
+                     className="bg-muted-foreground/10 p-2 rounded-full hover:bg-gaza-primary/20 transition-colors">
+                    <Twitter size={16} className="text-gaza-primary" />
+                  </a>
+                )}
+                
+                {settings.instagram_url && (
+                  <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer"
+                     className="bg-muted-foreground/10 p-2 rounded-full hover:bg-gaza-primary/20 transition-colors">
+                    <Instagram size={16} className="text-gaza-primary" />
+                  </a>
+                )}
+                
+                {settings.youtube_url && (
+                  <a href={settings.youtube_url} target="_blank" rel="noopener noreferrer"
+                     className="bg-muted-foreground/10 p-2 rounded-full hover:bg-gaza-primary/20 transition-colors">
+                    <Youtube size={16} className="text-gaza-primary" />
+                  </a>
+                )}
+                
+                {settings.linkedin_url && (
+                  <a href={settings.linkedin_url} target="_blank" rel="noopener noreferrer"
+                     className="bg-muted-foreground/10 p-2 rounded-full hover:bg-gaza-primary/20 transition-colors">
+                    <Linkedin size={16} className="text-gaza-primary" />
+                  </a>
+                )}
+                
+                {settings.telegram_url && (
+                  <a href={settings.telegram_url} target="_blank" rel="noopener noreferrer"
+                     className="bg-muted-foreground/10 p-2 rounded-full hover:bg-gaza-primary/20 transition-colors">
+                    <MessageCircle size={16} className="text-gaza-primary" />
+                  </a>
+                )}
+                
+                {settings.tiktok_url && (
+                  <a href={settings.tiktok_url} target="_blank" rel="noopener noreferrer"
+                     className="bg-muted-foreground/10 p-2 rounded-full hover:bg-gaza-primary/20 transition-colors">
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      width="16" 
+                      height="16" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      className="text-gaza-primary"
+                    >
+                      <path d="M9 12a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
+                      <path d="M15 8a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/>
+                      <path d="M15 8v8a4 4 0 0 1-4 4"/>
+                      <line x1="15" y1="4" x2="15" y2="12"/>
+                    </svg>
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </div>
