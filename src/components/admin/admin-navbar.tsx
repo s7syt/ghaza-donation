@@ -12,7 +12,9 @@ import {
   ChevronDown,
   Wallet,
   User,
-  UserCircle
+  UserCircle,
+  Settings,
+  Share2
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -52,6 +54,8 @@ export function AdminNavbar() {
     { href: "/admin/donors", label: "المتبرعون", icon: Users },
     { href: "/admin/members", label: "الأعضاء", icon: UserCircle },
     { href: "/admin/payment-methods", label: "طرق الدفع", icon: Wallet },
+    { href: "/admin/site-settings", label: "إعدادات الموقع", icon: Settings },
+    { href: "/admin/social-links", label: "روابط التواصل", icon: Share2 },
   ];
   
   const isActive = (path: string) => location.pathname === path;

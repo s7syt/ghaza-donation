@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { AdminNavbar } from "./admin-navbar";
@@ -21,7 +20,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const menuItems = [
   { label: "لوحة التحكم", icon: <LayoutDashboard className="ml-2" size={18} />, link: "/admin/dashboard" },
@@ -35,7 +34,7 @@ const menuItems = [
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
@@ -153,7 +152,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
       <div className="h-screen flex flex-col md:flex-row">
         <Sidebar />
         <div className="flex-1 overflow-x-hidden overflow-y-auto bg-background">
-          <AdminNavbar openMobileMenu={() => setMobileMenuOpen(true)} />
+          <AdminNavbar />
           <main className="min-h-[calc(100vh-64px)]">
             {children}
           </main>

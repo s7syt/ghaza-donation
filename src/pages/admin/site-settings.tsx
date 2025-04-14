@@ -117,7 +117,7 @@ export default function SiteSettingsPage() {
     return (
       <AdminLayout>
         <div className="py-20 flex justify-center items-center">
-          <LoadingSpinner size="lg" />
+          <LoadingSpinner />
         </div>
       </AdminLayout>
     );
@@ -313,7 +313,7 @@ export default function SiteSettingsPage() {
               >
                 {loading ? (
                   <>
-                    <LoadingSpinner className="ml-2" />
+                    <LoadingSpinner />
                     جاري الحفظ...
                   </>
                 ) : (
